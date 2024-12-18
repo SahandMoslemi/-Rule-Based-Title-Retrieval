@@ -127,8 +127,8 @@ class Masoud2(Masoud):
         logging.info("Embedding titles...")
         masoud_2 = KeyedVectors.load_word2vec_format(self.masoud_6, binary=True)
 
-        masoud_1["title_word2vec"] = masoud_1["title_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
-        masoud_1["tags_word2vec"] = masoud_1["tags_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
+        masoud_1["title_embedding"] = masoud_1["title_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
+        masoud_1["tags_embedding"] = masoud_1["tags_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
 
         return masoud_1
       
