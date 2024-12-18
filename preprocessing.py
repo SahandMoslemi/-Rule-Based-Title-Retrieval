@@ -60,7 +60,7 @@ class Masoud2(Masoud):
 
         else:
             logging.info(f"Generating embeddings for {masoud_5}...")
-            
+
             self.masoud_3 = self.maosud(masoud_3)
             self.masoud_3.to_pickle(masoud_7)
 
@@ -135,7 +135,10 @@ class Masoud2(Masoud):
         logging.info("Embedding titles...")
         masoud_2 = KeyedVectors.load_word2vec_format(self.masoud_6, binary=True)
 
+        logging.info("Embedding titles...")
         masoud_1["title_embedding"] = masoud_1["title_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
+        
+        logging.info("Embedding tags...")
         masoud_1["tags_embedding"] = masoud_1["tags_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
 
         return masoud_1
