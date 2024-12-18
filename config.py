@@ -8,6 +8,7 @@ MASOUD = os.getcwd()
 
 # Data
 MASOUD_1 = os.path.join(MASOUD, "data")
+MASOUD_6 = os.path.join(MASOUD_1, "recommendation-movies/large_movies_clean.csv")
 
 # TMP
 MASOUD_2 = os.path.join(MASOUD, "tmp")
