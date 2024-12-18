@@ -9,9 +9,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def average_embedding(embedding_list):
-    if len(embedding_list) == 0:
-        return np.zeros(300) #.
-
     return np.mean(embedding_list, axis=0)
 
 class EmbeddingRegressor(nn.Module):
