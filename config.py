@@ -10,6 +10,10 @@ MASOUD = os.getcwd()
 MASOUD_1 = os.path.join(MASOUD, "data")
 MASOUD_6 = os.path.join(MASOUD_1, "recommendation-movies/large_movies_clean.csv")
 
+# Models
+MASOUD_7 = os.path.join(MASOUD, "models")
+MASOUD_8 = os.path.join(MASOUD_7, "GoogleNews-vectors-negative300.bin.gz")
+
 # TMP
 MASOUD_2 = os.path.join(MASOUD, "tmp")
 
