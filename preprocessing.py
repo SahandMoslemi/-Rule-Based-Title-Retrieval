@@ -113,7 +113,7 @@ class Masoud2(Masoud):
         masoud_2 = re.compile(r'[^a-zA-Z0-9]')
         masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #.
         masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #.
-        
+
         # Stopwords
         masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(remove_stopwords)
         masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(remove_stopwords)
@@ -139,9 +139,12 @@ class Masoud2(Masoud):
         logging.info("Embedding tags...")
         masoud_1["tags_embedding"] = masoud_1["tags_tokenized"].progress_apply(lambda m: self._masoud_3(m, masoud_2))
 
+        masoud_1 = masoud_1[masoud_1["title_embedding"].apply(len) > 0] #.
+        masoud_1 = masoud_1[masoud_1["tags_embedding"].apply(len) > 0] #.
+
         return masoud_1
       
 if __name__ == "__main__":
     masoud = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9)
 
-    masoud.masoud_3.to_html("masoud.html")
+    print(masoud.masoud_3.head())
