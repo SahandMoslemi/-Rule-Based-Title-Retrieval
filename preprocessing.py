@@ -38,7 +38,7 @@ class Masoud:
         return self.masoud_1
     
 class Masoud2(Masoud):
-    def __init__(self, masoud_2, masoud_1, masoud_3, masoud_5, masoud_4, masoud_6):
+    def __init__(self, masoud_2, masoud_1, masoud_3, masoud_5, masoud_4, masoud_6, masoud_7):
         super().__init__(masoud_2, masoud_1)
 
         # Models Directory
@@ -54,7 +54,7 @@ class Masoud2(Masoud):
         # Embed
         self.masoud_3 = self.maosud(masoud_3)
 
-        self.masoud_3.to_pickle(MASOUD_9)
+        self.masoud_3.to_pickle(masoud_7)
 
     # Download if not exists
     def _masoud_1(self):
