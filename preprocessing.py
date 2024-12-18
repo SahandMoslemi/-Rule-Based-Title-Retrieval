@@ -2,10 +2,12 @@ import kagglehub
 import os
 import logging
 import shutil
+import re
 import pandas as pd
 from tqdm import tqdm
 from config import MASOUD_1, MASOUD_6
 from nltk.tokenize import word_tokenize
+from gensim.parsing.preprocessing import remove_stopwords
 
 class Masoud:
     def __init__(self, masoud_2, masoud_1):
@@ -42,28 +44,38 @@ class Masoud2(Masoud):
     def _masoud_2(self, masoud):
         return pd.read_csv(masoud, usecols=['title', 'tags'])
     
-    def _mosud_3(self, masoud):
-        try:
-            return word_tokenize(masoud)
-
-        except:
-            print(f"Error: {masoud}")
-            
-
     # Tokenize titles and tags
     def maosud(self, masoud):
         masoud_1 = self._masoud_2(masoud)
-        
-        logging.info("Tokenizing titles...")
+
+        # Dropping NaN 
+        logging.info("Dropping NaN values...")
+        masoud_1.dropna(inplace=True)
+        logging.info(f"Shape after dropping NaN values: {masoud_1.shape}")
+
+        masoud_1['title_tokenized'] = masoud_1['title']
+        masoud_1['tags_tokenized'] = masoud_1['tags']
+
+        # Special Characters
+        masoud_2 = re.compile(r'[^a-zA-Z0-9]')
+        masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(lambda x: masoud_2.sub(' ', x))
+        masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(lambda x: masoud_2.sub(' ', x))
+
+        # Stopwords
+        masoud_1['title_tokenized'] = masoud_1['title_cleaned'].apply(remove_stopwords)
+        masoud_1['tags_tokenized'] = masoud_1['tags_cleaned'].apply(remove_stopwords)
+
+        # Tokenize
+        logging.info("Tokenizing cleaned titles...")
         tqdm.pandas(desc="Tokenizing titles...")
-        masoud_1['title_tokenized'] = masoud_1['title'].progress_apply(word_tokenize)
-        
-        logging.info("Tokenizing tags...")
+        masoud_1['title_tokenized'] = masoud_1['title_tokenized'].progress_apply(word_tokenize)
+
+        logging.info("Tokenizing cleaned tags...")
         tqdm.pandas(desc="Tokenizing tags...")
-        masoud_1['tags_tokenized'] = masoud_1['tags'].progress_apply(word_tokenize)
-        
+        masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].progress_apply(word_tokenize)
+
         logging.info("Tokenization completed.")
-        
+
         return masoud_1
       
 if __name__ == "__main__":
