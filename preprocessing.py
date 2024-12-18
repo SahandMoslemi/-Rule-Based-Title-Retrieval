@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from gensim.models import KeyedVectors
-from config import MASOUD_1, MASOUD_6, MASOUD_7, MASOUD_8
+from config import MASOUD_1, MASOUD_6, MASOUD_7, MASOUD_8, MASOUD_9
 from nltk.tokenize import word_tokenize
 from gensim.parsing.preprocessing import remove_stopwords
 
@@ -53,6 +53,8 @@ class Masoud2(Masoud):
 
         # Embed
         self.masoud_3 = self.maosud(masoud_3)
+
+        self.masoud_3.to_pickle(MASOUD_9)
 
     # Download if not exists
     def _masoud_1(self):
@@ -131,5 +133,4 @@ class Masoud2(Masoud):
         return masoud_1
       
 if __name__ == "__main__":
-    masoud = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8)
-    print(masoud.masoud_3.head())
+    masoud = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9)

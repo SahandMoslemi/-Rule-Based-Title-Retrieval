@@ -13,6 +13,7 @@ MASOUD_6 = os.path.join(MASOUD_1, "recommendation-movies/large_movies_clean.csv"
 # Models
 MASOUD_7 = os.path.join(MASOUD, "models")
 MASOUD_8 = os.path.join(MASOUD_7, "GoogleNews-vectors-negative300.bin.gz")
+MASOUD_9 = os.path.join(MASOUD_7, "tmdb-movies-clean-dataset.pkl")
 
 # TMP
 MASOUD_2 = os.path.join(MASOUD, "tmp")
