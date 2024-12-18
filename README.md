@@ -1,1 +1,1 @@
-# -Rule-Based-Title-Retrieval
+# Rule-Based-Title-Retrieval
