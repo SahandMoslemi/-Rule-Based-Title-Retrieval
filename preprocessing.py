@@ -61,7 +61,7 @@ class Masoud2(Masoud):
         else:
             logging.info(f"Generating embeddings for {masoud_5}...")
 
-            self.masoud_3 = self.maosud(masoud_3)
+            self.masoud_3 = self.maosud(masoud_3).sample(n=4000, random_state=1)
             self.masoud_3.to_pickle(masoud_7)
 
     # Download if not exists
@@ -86,14 +86,12 @@ class Masoud2(Masoud):
     # Embed
     def _masoud_3(self, m, masoudd):
         mas = []
+        
         for oud in m:
             if oud in masoudd:
-                mas.append(masoudd[oud])
+                mas.append(masoudd[oud]) #.
 
-            else:
-                mas.append(np.zeros(masoudd.vector_size))
-
-        return mas
+        return np.array(mas)
     
     # Get Embeddings
     def maosud(self, masoud):
@@ -113,9 +111,9 @@ class Masoud2(Masoud):
 
         # Special Characters
         masoud_2 = re.compile(r'[^a-zA-Z0-9]')
-        masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #
-        masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #
-
+        masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #.
+        masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(lambda x: masoud_2.sub(' ', x)) #.
+        
         # Stopwords
         masoud_1['title_tokenized'] = masoud_1['title_tokenized'].apply(remove_stopwords)
         masoud_1['tags_tokenized'] = masoud_1['tags_tokenized'].apply(remove_stopwords)
@@ -145,3 +143,5 @@ class Masoud2(Masoud):
       
 if __name__ == "__main__":
     masoud = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9)
+
+    masoud.masoud_3.to_html("masoud.html")
