@@ -15,13 +15,16 @@ class EmbeddingRegressor(nn.Module):
         self.network = nn.Sequential(
             nn.Linear(input_dim, 1024),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
-            nn.Linear(1024, 1024),
+            nn.Dropout(p=0.2),
+            nn.Linear(1024, 512),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
-            nn.Linear(1024, 1024),
+            nn.Dropout(p=0.2),
+            nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Linear(1024, output_dim)
+            nn.Dropout(p=0.2),
+            nn.Linear(256, 512),
+            nn.ReLU(),
+            nn.Linear(512, output_dim)
         )
     
     def forward(self, x):
@@ -80,8 +83,8 @@ if __name__ == "__main__":
     # Train
     model = EmbeddingRegressor(input_dim, output_dim)
     
-    learning_rate = 0.5
-    epochs = 20000
+    learning_rate = 1
+    epochs = 1000
     train_model(model, X_train, y_train, learning_rate, epochs)
 
     # Inference
