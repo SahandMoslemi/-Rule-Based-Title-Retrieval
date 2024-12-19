@@ -1,6 +1,7 @@
 from preprocessing import Masoud2
 from config import MASOUD_1, MASOUD_6, MASOUD_7, MASOUD_8, MASOUD_9
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
@@ -51,11 +52,19 @@ def find_closest_title(predicted_embedding, title_embeddings, titles):
     closest_idx = np.argmax(similarities)
     return titles[closest_idx], similarities[0][closest_idx]
 
+def embedding_output(df, dataclass, output_path):
+    embeddings_df = pd.DataFrame(df[dataclass].to_list())
+    embeddings_df.to_csv(output_path, index=False)
+
+
 if __name__ == "__main__":
     df = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9).masoud_3
 
     df['avg_title_embedding'] = df['title_embedding'].apply(average_embedding)
     df['avg_tags_embedding'] = df['tags_embedding'].apply(average_embedding)
+
+    embedding_output(df, "avg_title_embedding", "avg_title_embedding.csv")
+    embedding_output(df, "avg_tags_embedding", "avg_tags_embedding.csv")
     
     X = np.stack(df['avg_tags_embedding'].values)
     y = np.stack(df['avg_title_embedding'].values)
