@@ -93,6 +93,10 @@ class Masoud2(Masoud):
 
         return np.array(mas)
     
+    # Average
+    def _masoud_4(self, embedding_list):
+        return np.mean(embedding_list, axis=0)
+    
     # Get Embeddings
     def maosud(self, masoud):
         masoud_1 = self._masoud_2(masoud)
@@ -141,6 +145,9 @@ class Masoud2(Masoud):
 
         masoud_1 = masoud_1[masoud_1["title_embedding"].apply(len) > 0] #.
         masoud_1 = masoud_1[masoud_1["tags_embedding"].apply(len) > 0] #.
+
+        masoud_1['avg_title_embedding'] = masoud_1['title_embedding'].apply(self._masoud_4)
+        masoud_1['avg_tags_embedding'] = masoud_1['tags_embedding'].apply(self._masoud_4)
 
         return masoud_1
       
