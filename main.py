@@ -7,6 +7,18 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
+import matplotlib.pyplot as plt
+
+def find_n_closest_documents_l1(predicted_embedding, title_embeddings, titles, n):
+    distances = np.sum(np.abs(title_embeddings - predicted_embedding.numpy()), axis=1)
+    sorted_indices = np.argsort(distances)[:n]
+    return [(titles[idx], distances[idx]) for idx in sorted_indices]
+
+def calculate_precision_at_k(retrieved_titles, relevant_titles, k):
+    top_k_retrieved = retrieved_titles[:k]
+    relevant_in_top_k = sum(1 for title in top_k_retrieved if title in relevant_titles)
+    return relevant_in_top_k / k
+
 
 
 class EmbeddingRegressor(nn.Module):
@@ -66,51 +78,64 @@ def find_closest_title_l1(predicted_embedding, title_embeddings, titles):
 
 if __name__ == "__main__":
     df = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9).masoud_3
-    df = df.sample(n=20, random_state=42)
-    
-    X = np.stack(df['avg_tags_embedding'].values)
-    y = np.stack(df['avg_title_embedding'].values)
+    df = df.sample(n=1000, random_state=42)
 
-    X_train, X_test, y_train, y_test, X_train_indices, X_test_indices = train_test_split(X, y, np.arange(len(df)), test_size=0.2, random_state=42)
+    embeddings = {
+        'Plain': ('avg_tags_embedding', 'avg_title_embedding'),
+        'RLL': ('max_tags_embedding', 'max_title_embedding')
+    }
 
-    X_train = torch.FloatTensor(X_train)
-    y_train = torch.FloatTensor(y_train)
-    X_test = torch.FloatTensor(X_test)
-    y_test = torch.FloatTensor(y_test)
-    
-    input_dim = output_dim = X_train.shape[1]
-    
-    # Train
-    model = EmbeddingRegressor(input_dim, output_dim)
-    
-    learning_rate = 1
-    epochs = 1000
-    train_model(model, X_train, y_train, learning_rate, epochs)
+    precision_at_k_results = {key: {5: [], 10: [], 15: [], 20: []} for key in embeddings.keys()}
 
-    # Inference
-    for i in range(10):
-        sample_tag = X_train[i].unsqueeze(0)
+    for embedding_type, (tags_column, titles_column) in embeddings.items():
+        X = np.stack(df[tags_column].values)
+        y = np.stack(df[titles_column].values)
 
-        predicted_embedding = inference(model, sample_tag)
-        
-        closest_title, distance = find_closest_title_l1(predicted_embedding, y, df['title'].values)
+        X_train, X_test, y_train, y_test, X_train_indices, X_test_indices = train_test_split(X, y, np.arange(len(df)), test_size=0.2, random_state=42)
 
-        logging.info("=====================================")
-        logging.info(f"Input tags: {df['tags'].iloc[X_train_indices[i]]}")
-        logging.info(f"Actual title: {df['title'].iloc[X_train_indices[i]]}")
-        logging.info(f"Predicted embedding: {predicted_embedding.numpy().flatten()[:5]}...")
-        logging.info(f"Closest title predicted: {closest_title}")
-        logging.info(f"L1 Distance score: {distance:.4f}")
+        X_train = torch.FloatTensor(X_train)
+        y_train = torch.FloatTensor(y_train)
+        X_test = torch.FloatTensor(X_test)
+        y_test = torch.FloatTensor(y_test)
 
-        sample_tag = X_train[i].unsqueeze(0)
+        input_dim = output_dim = X_train.shape[1]
 
-        predicted_embedding = inference(model, sample_tag)
-        
-        closest_title, distance = find_closest_title_cosine(predicted_embedding, y, df['title'].values)
-        
-        logging.info(f"Input tags: {df['tags'].iloc[X_train_indices[i]]}")
-        logging.info(f"Actual title: {df['title'].iloc[X_train_indices[i]]}")
-        logging.info(f"Predicted embedding: {predicted_embedding.numpy().flatten()[:5]}...")
-        logging.info(f"Closest title predicted: {closest_title}")
-        logging.info(f"Similarity score: {distance:.4f}")
-        logging.info("=====================================")
+        # Train
+        model = EmbeddingRegressor(input_dim, output_dim)
+
+        learning_rate = 1
+        epochs = 5000
+        train_model(model, X_train, y_train, learning_rate, epochs)
+
+        # Precision@K 
+        for i in range(len(X_train)):
+            sample_tag = X_train[i].unsqueeze(0)
+            predicted_embedding = inference(model, sample_tag)
+
+            closest_documents = find_n_closest_documents_l1(predicted_embedding, y, df['title'].values, max(precision_at_k_results[embedding_type].keys()))
+            retrieved_titles = [doc[0] for doc in closest_documents]
+
+            # ground truth titles for data
+            relevant_titles = [df['title'].iloc[X_train_indices[i]]]
+
+            for k in precision_at_k_results[embedding_type].keys():
+                precision = calculate_precision_at_k(retrieved_titles, relevant_titles, k)
+                precision_at_k_results[embedding_type][k].append(precision)
+
+    # mean precision for k
+    mean_precision_at_k_results = {
+        embedding_type: {k: np.mean(precision_at_k_results[embedding_type][k]) for k in precision_at_k_results[embedding_type].keys()}
+        for embedding_type in embeddings.keys()
+    }
+
+    # Plot Precision@K for both avg and max
+    plt.figure()
+    for embedding_type, mean_precision_at_k in mean_precision_at_k_results.items():
+        plt.plot(mean_precision_at_k.keys(), mean_precision_at_k.values(), marker='o', label=f'{embedding_type} embeddings')
+
+    plt.title('Precision@K Comparison')
+    plt.xlabel('K')
+    plt.ylabel('Mean Precision')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('precision_at_k_comparison_plot.png')
