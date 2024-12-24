@@ -1,6 +1,7 @@
 from preprocessing import Masoud2
 from config import MASOUD_1, MASOUD_6, MASOUD_7, MASOUD_8, MASOUD_9
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
@@ -76,6 +77,12 @@ def find_closest_title_l1(predicted_embedding, title_embeddings, titles):
     closest_idx = np.argmin(distances)
     return titles[closest_idx], distances[closest_idx]
 
+def embedding_output(df, dataclass, output_path):
+    embeddings_df = pd.DataFrame(df[dataclass].to_list())
+    embeddings_df.to_csv(output_path, index=False)
+
+
+
 if __name__ == "__main__":
     df = Masoud2("bharatkumar0925/tmdb-movies-clean-dataset", MASOUD_1, MASOUD_6, "leadbest/googlenewsvectorsnegative300", MASOUD_7, MASOUD_8, MASOUD_9).masoud_3
     df = df.sample(n=1000, random_state=42)
@@ -139,3 +146,4 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(True)
     plt.savefig('precision_at_k_comparison_plot.png')
+
