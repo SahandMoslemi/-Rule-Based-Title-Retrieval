@@ -1,6 +1,12 @@
-# Project Title: **Embedding-Based Relevance Matching, LLM Fine-Tuning, and Evaluation**
+# Project Title: **Content-based Movie Title Retrieval**
 ## Overview
-This project includes a complete pipeline for text embedding, embedding regression, and evaluation, along with fine-tuning a large language model (LLM) using PyThea. The LLM fine-tuning module extends the project's capabilities to natural language understanding and generation tasks.
+This project explores the development of a hybrid content-based retrieval system that integrates deep learning models with rule-based representation learning. The aim is to balance the trade-off between interpretability and performance in recommendation systems.
+
+Traditional methods, while transparent, face challenges in scalability and handling complex data distributions. On the other hand, deep learning excels at feature extraction and retrieval efficiency but often lacks interpretability. To address these limitations, this project incorporates logical layers informed by knowledge graphs into deep learning architectures. By combining these approaches, the system leverages the interpretability of rule-based models and the performance benefits of deep learning.
+
+Using the TMDB Movies Clean dataset with over 660,000 records, the project implements a robust preprocessing pipeline that includes tokenization and embedding generation using Word2Vec. A Rule Representation Learner (RRL) discretizes continuous features, while Gradient Grafting integrates discrete and continuous gradients during model training.
+
+Experimental results highlight the effectiveness of this hybrid approach, demonstrating improvements in retrieval performance and generalization capabilities. Precision@K metrics consistently outperform baseline embeddings, with the integration of knowledge graphs showing improved semantic understanding and interpretability through explicit rule generation. This project offers a promising direction for building efficient and transparent content-based retrieval systems.
 
 ---
 
