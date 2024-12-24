@@ -97,6 +97,10 @@ class Masoud2(Masoud):
     def _masoud_4(self, embedding_list):
         return np.mean(embedding_list, axis=0)
     
+    # Max Absolute
+    def _masoud_5(self, embedding_list):
+        return np.max(np.abs(embedding_list), axis=0)
+    
     # Get Embeddings
     def maosud(self, masoud):
         masoud_1 = self._masoud_2(masoud)
@@ -148,6 +152,9 @@ class Masoud2(Masoud):
 
         masoud_1['avg_title_embedding'] = masoud_1['title_embedding'].apply(self._masoud_4)
         masoud_1['avg_tags_embedding'] = masoud_1['tags_embedding'].apply(self._masoud_4)
+
+        masoud_1['max_title_embedding'] = masoud_1['title_embedding'].apply(self._masoud_5)
+        masoud_1['max_tags_embedding'] = masoud_1['tags_embedding'].apply(self._masoud_5)
 
         return masoud_1
       
