@@ -79,6 +79,9 @@ Run `preprocessing.py` to preprocess and generate embeddings:
 python preprocessing.py
 ```
 
+### File Generation for RRL
+Run `embeddings_mean.ipynb` after embeddings are created. This code will generate .info and .data files.
+
 ### Embedding Regression and Evaluation
 Run `main.py` to train the embedding regression model and evaluate relevance:
 ```bash
