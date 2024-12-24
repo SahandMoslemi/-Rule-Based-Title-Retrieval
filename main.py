@@ -88,8 +88,8 @@ if __name__ == "__main__":
     df = df.sample(n=1000, random_state=42)
 
     embeddings = {
-        'Plain': ('avg_tags_embedding', 'avg_title_embedding'),
-        'RLL': ('max_tags_embedding', 'max_title_embedding')
+        'Average': ('avg_tags_embedding', 'avg_title_embedding'),
+        'Max': ('max_tags_embedding', 'max_title_embedding')
     }
 
     precision_at_k_results = {key: {5: [], 10: [], 15: [], 20: []} for key in embeddings.keys()}
